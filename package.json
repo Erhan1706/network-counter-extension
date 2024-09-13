@@ -1,0 +1,21 @@
+{
+  "name": "network-extension",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -rf dist",
+    "compile": "npx tsc",
+    "copy": "rsync -av --exclude 'src' --exclude 'tsconfig.json' --exclude 'dist' ./ dist",
+    "build": "npm run clean && npm run compile && npm run copy"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "description": "",
+  "devDependencies": {
+    "@types/chrome": "^0.0.270",
+    "typescript": "^5.6.2"
+  }
+}
