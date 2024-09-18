@@ -1,0 +1,12 @@
+.network-request-counter {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  padding: 5px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  z-index: 9999;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  border-radius: 4px;
+}
