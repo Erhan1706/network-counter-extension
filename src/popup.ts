@@ -1,9 +1,6 @@
-let counter: HTMLElement | null = document.getElementById("counter")
-
-//chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-//  if (counter) {
-//    counter.innerHTML = counter ? (parseInt(counter.innerHTML) + 1).toString() : "1"
-//  }
-//  console.log(message)
-  //sendResponse({ message: "hello from popup" })
-//})
+document.addEventListener("DOMContentLoaded", () => {
+  const disableSwitch : HTMLInputElement = document.getElementById("disable-switch") as HTMLInputElement;
+  disableSwitch.addEventListener("change", () => {
+    chrome.storage.sync.set({ disable: disableSwitch.checked });
+  });
+});

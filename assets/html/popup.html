@@ -3,13 +3,23 @@
     <link rel="stylesheet" href="../styles/popup.css" />
   </head>
   <body>
-    <h1>Hello Extensions</h1>
-    <div class="wrapper">
-      <h3 id="on-off-switch">Off</h3>
-      <label class="switch">
-        <input type="checkbox">
-        <span class="slider"></span>
-      </label>
+    <div class="popup-wrapper">
+      <h2 class="extension-title">Network requests counter</h2>
+      <div class="switch-wrapper">
+        <p class="option-text"> Disable extension </p>
+        <label class="switch">
+          <input type="checkbox" id="disable-switch">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="switch-wrapper">
+        <p class="option-text"> Minimal display </p>
+        <label class="switch">
+          <input type="checkbox" id="minimal-switch">
+          <span class="slider"></span>
+        </label>
+      </div>
     </div>
     <script src="../../src/popup.js"></script>
   </body>
