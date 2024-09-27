@@ -5,7 +5,7 @@
   "version": "1.0",
   "action": {
     "default_popup": "./assets/html/popup.html",
-    "default_icon": "./assets/images/network.png"
+    "default_icon": "./assets/images/icon.png"
   },
   "permissions": ["webRequest", "activeTab", "tabs", "storage", "scripting"],
   "host_permissions": ["<all_urls>"],
@@ -16,8 +16,8 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["src/content-script.js"], 
-      "css": ["assets/styles/content-script.css"] 
+      "js": ["src/content-script.js"],
+      "css": ["assets/styles/content-script.css"]
     }
   ],
   "web_accessible_resources": [

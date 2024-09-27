@@ -3,6 +3,8 @@ interface RequestCount {
   stylesheet: number;
   script: number;
   font: number;
+  xmlhttp: number;
+  media: number;
   total: number;
   error: number;
   reset: () => void;
@@ -14,6 +16,8 @@ let requestCount: RequestCount = {
   stylesheet: 0,
   script: 0,
   font: 0,
+  xmlhttp: 0,
+  media: 0,
   total: 0,
   error: 0,
   reset: function () {
@@ -21,8 +25,11 @@ let requestCount: RequestCount = {
     this.stylesheet = 0;
     this.script = 0;
     this.font = 0;
+    this.xmlhttp = 0;
+    this.media = 0;
     this.total = 0;
-  }
+    this.error = 0;
+  },
 };
 
 function countRequest(type: chrome.webRequest.ResourceType) {
@@ -45,51 +52,44 @@ function countRequest(type: chrome.webRequest.ResourceType) {
   }
 }
 
+chrome.webRequest.onErrorOccurred.addListener(
+  async (details) => {
+    requestCount.error++;
+  },
+  { urls: ["<all_urls>"] }
+);
+
 chrome.webRequest.onCompleted.addListener(
   async (details) => {
     if (details.statusCode % 100 === 4 || details.statusCode % 100 === 5) {
       requestCount.error++;
+    } else {
+      countRequest(details.type);
     }
-    countRequest(details.type);
     if (htmlRendered) {
       const [tab] = await chrome.tabs.query({
         active: true,
         lastFocusedWindow: true,
       });
-      if (tab.id) chrome.tabs.sendMessage(tab.id, { count: requestCount });
+      if (tab && tab.id)
+        chrome.tabs.sendMessage(tab.id, { count: requestCount });
     }
   },
   { urls: ["<all_urls>"] }
 );
 
-/* chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (changeInfo.status === "complete") {
-    chrome.scripting.executeScript(
-      {
-        target: { tabId },
-        func: () => {
-          return true;
-        },
-      },
-      () => {
-        chrome.tabs.sendMessage(tabId, { count: requestCount });
-      }
-    );
-  }
-}); */
-
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
   if (request.action === "html-rendered") {
     htmlRendered = true;
     if (sender.tab && sender.tab.id) {
       chrome.tabs.sendMessage(sender.tab.id, { count: requestCount });
     }
+  } else if (request.action === "reset") {
+    requestCount.reset();
+    const [tab] = await chrome.tabs.query({
+      active: true,
+      lastFocusedWindow: true,
+    });
+    if (tab && tab.id) chrome.tabs.sendMessage(tab.id, { count: requestCount });
   }
 });
-/* 
-chrome.tabs.onActivated.addListener(async (activeInfo) => {
-  requestCount = 0; 
-  activeTabId = activeInfo.tabId;
-
-  chrome.tabs.sendMessage(activeTabId, { count: requestCount });
-}); */

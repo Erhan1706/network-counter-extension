@@ -51,12 +51,19 @@ function updateCounter(count: RequestCount) {
   const fontElement: HTMLSpanElement = document.getElementById(
     "font-counter"
   ) as HTMLSpanElement;
-  const errorElement: HTMLSpanElement = document.getElementById("error-counter") as HTMLSpanElement;
+  const errorElement: HTMLSpanElement = document.getElementById(
+    "error-counter"
+  ) as HTMLSpanElement;
+  const minimalElement: HTMLSpanElement = document.getElementById(
+    "minimal-counter"
+  ) as HTMLSpanElement;
   if (counterElement) counterElement.textContent = `${count.total}`;
   if (cssElement) cssElement.textContent = `${count.stylesheet}`;
   if (jsElement) jsElement.textContent = `${count.script}`;
   if (fontElement) fontElement.textContent = `${count.font}`;
   if (errorElement) errorElement.textContent = `${count.error}`;
+  if (minimalElement)
+    minimalElement.textContent = `${count.total + count.error}`;
 }
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
