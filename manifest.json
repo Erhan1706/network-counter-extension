@@ -7,7 +7,7 @@
     "default_popup": "./assets/html/popup.html",
     "default_icon": "./assets/images/network.png"
   },
-  "permissions": ["webRequest", "activeTab", "tabs", "storage"],
+  "permissions": ["webRequest", "activeTab", "tabs", "storage", "scripting"],
   "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "src/background.js",

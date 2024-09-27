@@ -1,4 +1,5 @@
-let counterDiv: HTMLDivElement;
+// On first load of the content script, check if the extension is disabled
+chrome.storage.local.get({ disable: false, minimal: false }, toggleExtension);
 
 function toggleExtension(result: { disable?: boolean; minimal?: boolean }) {
   if (!result.disable) {
@@ -30,17 +31,32 @@ function renderExtension(result: { disable?: boolean; minimal?: boolean }) {
       wrapper.className = "extension-container";
       wrapper.innerHTML = html;
       document.body.appendChild(wrapper);
+      chrome.runtime.sendMessage({ action: "html-rendered" });
     })
     .catch((error) => {
       console.error("Error injecting HTML in the DOM:", error);
     });
 }
 
-function updateCounter(count: number) {
-  //if (!counterDiv) {
-  //  createCounterDiv();
-  //}
-  //counterDiv.textContent = `Successful requests: ${count}`;
+function updateCounter(count: RequestCount) {
+  const counterElement: HTMLSpanElement = document.getElementById(
+    "success-counter"
+  ) as HTMLSpanElement;
+  const cssElement: HTMLSpanElement = document.getElementById(
+    "css-counter"
+  ) as HTMLSpanElement;
+  const jsElement: HTMLSpanElement = document.getElementById(
+    "js-counter"
+  ) as HTMLSpanElement;
+  const fontElement: HTMLSpanElement = document.getElementById(
+    "font-counter"
+  ) as HTMLSpanElement;
+  const errorElement: HTMLSpanElement = document.getElementById("error-counter") as HTMLSpanElement;
+  if (counterElement) counterElement.textContent = `${count.total}`;
+  if (cssElement) cssElement.textContent = `${count.stylesheet}`;
+  if (jsElement) jsElement.textContent = `${count.script}`;
+  if (fontElement) fontElement.textContent = `${count.font}`;
+  if (errorElement) errorElement.textContent = `${count.error}`;
 }
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -56,6 +72,3 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     updateCounter(request.count);
   }
 });
-
-// On first load of the content script, check if the extension is disabled
-chrome.storage.local.get({ disable: false, minimal: false }, toggleExtension);
