@@ -66,6 +66,15 @@ async function sendMessageToTab(tabId: number, message: any) {
   }
 }
 
+function resetCounter() {
+  requestCount.reset();
+  chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
+    if (tabs[0] && tabs[0].id) {
+      sendMessageToTab(tabs[0].id, { count: requestCount });
+    }
+  });
+}
+
 chrome.webRequest.onErrorOccurred.addListener(
   async (details) => {
     requestCount.error++;
@@ -99,15 +108,14 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
       sendMessageToTab(sender.tab.id, { count: requestCount });
     }
   } else if (request.action === "reset") {
-    requestCount.reset();
-    chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
-      if (tabs[0] && tabs[0].id) {
-        sendMessageToTab(tabs[0].id, { count: requestCount });
-      }
-    });
+    resetCounter();
   }
 });
 
 chrome.tabs.onActivated.addListener(async (activeInfo) => {
   sendMessageToTab(activeInfo.tabId, { tabSwitch: true });
+});
+
+chrome.commands.onCommand.addListener((command) => {
+  if (command === "reset") resetCounter();
 });

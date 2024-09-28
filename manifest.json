@@ -13,6 +13,14 @@
     "service_worker": "src/background.js",
     "type": "module"
   },
+  "commands": {
+    "reset": {
+      "suggested_key": {
+        "default": "Alt+Q"
+      },
+      "description": "Reset the counter"
+    }
+  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
