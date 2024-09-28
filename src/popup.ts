@@ -9,14 +9,18 @@ document.addEventListener("DOMContentLoaded", () => {
     "reset-btn"
   ) as HTMLButtonElement;
 
+  /* The state of the extension consists of two booleans: disable and minimal
+  that define whether the extension is disabled, in minimal mode or in expanded mode.*/
   chrome.storage.local.get(
-    { disable: false, minimal: false, changeTabs: false },
+    { disable: false, minimal: false },
     function (result) {
       disableSwitch.checked = result.disable;
       minimalSwitch.checked = result.minimal;
     }
   );
 
+  /*  Each event listener changes its respective state in the storage and sends a message 
+  to the extension */
   disableSwitch.addEventListener("change", () => {
     chrome.storage.local.set({ disable: disableSwitch.checked });
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {

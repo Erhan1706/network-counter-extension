@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Network request counter",
-  "description": "",
+  "description": "Tracks and displays the number of completed network requests for the current tab",
   "version": "1.0",
   "action": {
     "default_popup": "./assets/html/popup.html",
