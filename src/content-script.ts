@@ -1,3 +1,15 @@
+const COUNTER_IDS = {
+  total: "success-counter",
+  stylesheet: "css-counter",
+  script: "js-counter",
+  font: "font-counter",
+  media: "media-counter",
+  xmlhttp: "xmlhttp-counter",
+  image: "image-counter",
+  error: "error-counter",
+  minimal: "minimal-counter",
+};
+
 // On first load of the content script, check if the extension is disabled
 chrome.storage.local.get({ disable: false, minimal: false }, toggleExtension);
 
@@ -39,31 +51,15 @@ function renderExtension(result: { disable?: boolean; minimal?: boolean }) {
 }
 
 function updateCounter(count: RequestCount) {
-  const counterElement: HTMLSpanElement = document.getElementById(
-    "success-counter"
-  ) as HTMLSpanElement;
-  const cssElement: HTMLSpanElement = document.getElementById(
-    "css-counter"
-  ) as HTMLSpanElement;
-  const jsElement: HTMLSpanElement = document.getElementById(
-    "js-counter"
-  ) as HTMLSpanElement;
-  const fontElement: HTMLSpanElement = document.getElementById(
-    "font-counter"
-  ) as HTMLSpanElement;
-  const errorElement: HTMLSpanElement = document.getElementById(
-    "error-counter"
-  ) as HTMLSpanElement;
-  const minimalElement: HTMLSpanElement = document.getElementById(
-    "minimal-counter"
-  ) as HTMLSpanElement;
-  if (counterElement) counterElement.textContent = `${count.total}`;
-  if (cssElement) cssElement.textContent = `${count.stylesheet}`;
-  if (jsElement) jsElement.textContent = `${count.script}`;
-  if (fontElement) fontElement.textContent = `${count.font}`;
-  if (errorElement) errorElement.textContent = `${count.error}`;
-  if (minimalElement)
-    minimalElement.textContent = `${count.total + count.error}`;
+  Object.keys(COUNTER_IDS).forEach((key) => {
+    const element: HTMLSpanElement = document.getElementById(
+      COUNTER_IDS[key as keyof typeof COUNTER_IDS]
+    ) as HTMLSpanElement;
+    if (element)
+      if (key === "minimal")
+        element.textContent = `${count.total + count.error}`;
+      else element.textContent = `${count[key as keyof RequestCount]}`;
+  });
 }
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -77,5 +73,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     );
   if (request.count !== undefined) {
     updateCounter(request.count);
+  }
+  if (request.tabSwitch) {
+    chrome.storage.local.get({ disable: false, minimal: false}, toggleExtension);
   }
 });

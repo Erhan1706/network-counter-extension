@@ -47,8 +47,22 @@ function countRequest(type: chrome.webRequest.ResourceType) {
     case "font":
       requestCount.font++;
       break;
+    case "xmlhttprequest":
+      requestCount.xmlhttp++;
+      break;
+    case "media":
+      requestCount.media++;
+      break;
     default:
       break;
+  }
+}
+
+async function sendMessageToTab(tabId: number, message: any) {
+  try {
+    await chrome.tabs.sendMessage(tabId, message);
+  } catch (error) {
+    console.log(`Failed to send message to tab ${tabId}: ${error}`);
   }
 }
 
@@ -66,13 +80,13 @@ chrome.webRequest.onCompleted.addListener(
     } else {
       countRequest(details.type);
     }
+    // Make sure the html is injected before sending the count on each request
     if (htmlRendered) {
       const [tab] = await chrome.tabs.query({
         active: true,
         lastFocusedWindow: true,
       });
-      if (tab && tab.id)
-        chrome.tabs.sendMessage(tab.id, { count: requestCount });
+      if (tab && tab.id) sendMessageToTab(tab.id, { count: requestCount });
     }
   },
   { urls: ["<all_urls>"] }
@@ -82,14 +96,18 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
   if (request.action === "html-rendered") {
     htmlRendered = true;
     if (sender.tab && sender.tab.id) {
-      chrome.tabs.sendMessage(sender.tab.id, { count: requestCount });
+      sendMessageToTab(sender.tab.id, { count: requestCount });
     }
   } else if (request.action === "reset") {
     requestCount.reset();
-    const [tab] = await chrome.tabs.query({
-      active: true,
-      lastFocusedWindow: true,
+    chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
+      if (tabs[0] && tabs[0].id) {
+        sendMessageToTab(tabs[0].id, { count: requestCount });
+      }
     });
-    if (tab && tab.id) chrome.tabs.sendMessage(tab.id, { count: requestCount });
   }
+});
+
+chrome.tabs.onActivated.addListener(async (activeInfo) => {
+  sendMessageToTab(activeInfo.tabId, { tabSwitch: true });
 });
