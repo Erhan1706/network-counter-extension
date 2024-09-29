@@ -29,6 +29,8 @@
 
 <ins>Note:</ins> the extension does not count requests retrieved from the cache (these are typically shown as faded in the browser's network tab).
 
+<ins>Note:</ins>: due to the non persistent nature of service workers, the extension's service worker might stop counting requests after some idle time, in this case a refresh is needed.
+
 ## Getting Started
 
 To get a local copy up and running follow these simple steps.

@@ -10,6 +10,11 @@ interface RequestCount {
   reset: () => void;
 }
 
+// Little hack to make the service worker persistent, and avoid it from going to sleep
+const keepAlive = () => setInterval(chrome.runtime.getPlatformInfo, 20e3);
+chrome.runtime.onStartup.addListener(keepAlive);
+keepAlive();
+
 let htmlRendered: boolean = false; // Flag to check if the HTML is injected in the DOM
 const requestCount: RequestCount = {
   // Object to store the count of each request type
