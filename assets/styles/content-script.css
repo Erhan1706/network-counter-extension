@@ -3,13 +3,14 @@
   margin: 0;
   padding: 0;
   border-width: 0px;
+  width: auto !important;
 }
 
 .expanded-wrapper {
   position: fixed;
   bottom: 30px;
   right: 30px;
-  padding: 12px;
+  padding: 12px !important;
   background-color: rgb(255 255 255);
   filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
     drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
@@ -19,27 +20,27 @@
   align-items: center;
   z-index: 10000;
   font-family: "Tahoma", sans-serif;
-  border-width: 2px;
-  border-radius: 2px;
+  border-width: 2px !important;
+  border-radius: 2px !important;
 }
 
 .svg-icon {
-  width: 24px;
-  height: 24px;
+  width: 24px !important;
+  height: 24px !important;
   fill: currentColor;
 }
 
 .extra-info {
-  font-size: 12px;
-  line-height: 16px;
+  font-size: 12px !important;
+  line-height: 16px !important;
   color: #666;
   display: flex;
   align-items: center;
 }
 
 .extra-info-text {
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 16px !important;
+  line-height: 24px !important;
   margin-left: 12px !important;
   margin-right: 12px !important;
   margin-top: 2px !important;
@@ -48,12 +49,9 @@
 }
 
 .requests-text {
-  margin-left: 8px;
-  margin-right: 8px;
-  margin-top: 2px;
-  margin-bottom: 2px;
-  font-size: 18px;
-  line-height: 28px;
+  margin: 2px 8px !important;
+  font-size: 18px !important;
+  line-height: 28px !important;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -73,8 +71,8 @@
 }
 
 .bad-requests {
-  margin-bottom: 16px;
-  padding-bottom: 8px;
+  margin-bottom: 16px !important;
+  padding-bottom: 8px !important;
   border-bottom: solid 2px black;
 }
 
@@ -92,18 +90,19 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 48px;
-  height: 48px;
+  width: 48px !important;
+  height: 48px !important;
   background-color: white;
   border-radius: 50%;
   border-width: 2px;
   border-color: black;
   border-style: outset;
   z-index: 10000;
+  padding: 0px !important;
 }
 
 #minimal-counter {
   font-family: "Tahoma", sans-serif;
-  font-size: 18px;
+  font-size: 18px !important;
   color: black;
 }

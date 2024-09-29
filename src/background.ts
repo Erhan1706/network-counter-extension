@@ -11,7 +11,8 @@ interface RequestCount {
 }
 
 let htmlRendered: boolean = false; // Flag to check if the HTML is injected in the DOM
-let requestCount: RequestCount = { // Object to store the count of each request type
+const requestCount: RequestCount = {
+  // Object to store the count of each request type
   image: 0,
   stylesheet: 0,
   script: 0,
@@ -89,12 +90,12 @@ chrome.webRequest.onErrorOccurred.addListener(
 // Listen for completed requests and increment the count of each request type
 chrome.webRequest.onCompleted.addListener(
   async (details) => {
-    if (details.statusCode % 100 === 4 || details.statusCode % 100 === 5) {
+    if (details.statusCode >= 400) {
       requestCount.error++;
     } else {
       countRequest(details.type);
     }
-    // Make sure the html is injected before sending the count on each request, 
+    // Make sure the html is injected before sending the count on each request,
     // otherwise the count will be unnacurate.
     if (htmlRendered) {
       const [tab] = await chrome.tabs.query({
@@ -127,9 +128,4 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
 // When user presses 'Alt+Q' the 'reset' command is triggered
 chrome.commands.onCommand.addListener((command) => {
   if (command === "reset") resetCounter();
-});
-
-// When the URL of the tab changes, the HTML will have to be reinjected
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  htmlRendered = false;
 });

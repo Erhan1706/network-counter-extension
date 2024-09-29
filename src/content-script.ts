@@ -1,3 +1,4 @@
+// Collection of all the id's of the HTML elements where the counters will be displayed
 const COUNTER_IDS = {
   total: "success-counter",
   stylesheet: "css-counter",
@@ -46,7 +47,6 @@ function renderExtension(result: { disable?: boolean; minimal?: boolean }) {
       wrapper.className = "extension-container";
       wrapper.innerHTML = html;
       document.body.appendChild(wrapper);
-      console.log("HTML injected in the DOM");
       chrome.runtime.sendMessage({ action: "html-rendered" });
     })
     .catch((error) => {
@@ -70,9 +70,11 @@ function updateCounter(count: RequestCount) {
 // Listen for messages from the background script or popup
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // Change the rendering of the extension according to the disable or minimal flag
+  // Or check if the previous tab changed the state of the extension
   if (
     request.action === "toggle-disable" ||
-    request.action === "toggle-minimal"
+    request.action === "toggle-minimal" ||
+    request.tabSwitch
   )
     chrome.storage.local.get(
       { disable: false, minimal: false },
@@ -81,12 +83,5 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // Update counter on each request
   if (request.count !== undefined) {
     updateCounter(request.count);
-  }
-  // Check if the previous tab changed the state of the extension
-  if (request.tabSwitch) {
-    chrome.storage.local.get(
-      { disable: false, minimal: false },
-      toggleExtension
-    );
   }
 });
