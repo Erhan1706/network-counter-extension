@@ -29,8 +29,6 @@
 
 <ins>Note:</ins> the extension does not count requests retrieved from the cache (these are typically shown as faded in the browser's network tab).
 
-<ins>Note:</ins>: due to the non persistent nature of service workers, the extension's service worker might stop counting requests after some idle time, in this case a refresh is needed.
-
 ## Getting Started
 
 To get a local copy up and running follow these simple steps.
@@ -67,10 +65,16 @@ To get started with the project, follow these steps:
 
 - Open your browser and navigate to your extension tab.
 - Enable Developer mode by toggling the switch at the top-right corner.
-- Click on Load unpacked and select the dist folder from the cloned repository.
+- Click on 'Load unpacked' and select the dist folder from the cloned repository.
+
+## Implementation
+
+- **Content Script**: Injects HTML into the DOM based on user preferences (expanded or minimal view) from the popup. After injection, it sends a message to the service worker to signal that the UI is ready. The script updates the UI with request counts received from the service worker.
+
+- **Service Worker**: Uses the `chrome.webRequest` API to count network requests. It tracks different resource types (images, scripts, fonts, etc.) and updates the content script with the count when new requests are received. The service worker ensures that the request counting persists by maintaining a persistent connection to avoid going to sleep. The counter resets via a keyboard shortcut or user action in the popup.
 
 ## Future improvements
 
-- Track the time taken for each type of request and provide an average or total time spent on different resource types (e.g., css, script).
+- Track the time taken for each type of request and provide an average or total time spent on different resource types (e.g. css, scripts).
 - Allow the user to choose whether they want to reset the counter each time the active tab is switched.
 - Add filtering functionalityshow only specific types of requests (e.g., only images, or only scripts).
